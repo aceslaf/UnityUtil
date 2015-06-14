@@ -1,15 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class AllTriggerEventsTypes
-{
-	public enum EventTypes
-	{
-		Enter,
-		Stay,
-		Exit
-	}
-}
+
 
 public class LightTriggerEnterDispatcher : BaseLightSingleTriggerEventDispatcher<GameObject>
 {
@@ -17,6 +9,14 @@ public class LightTriggerEnterDispatcher : BaseLightSingleTriggerEventDispatcher
 	public override void SubscribeToLightTriggerEvent(Action<GameObject> go)
 	{
 		this.Enter += go;
+	}
+
+	public override void UnSubscribeToLightTriggerEvent(Action<GameObject> go)
+	{
+		if (this.Enter != null)
+		{
+			this.Enter -= go;
+		}
 	}
 
 	private void OnTriggerEnter()
@@ -36,6 +36,14 @@ public class LightTriggerExitDispatcher : BaseLightSingleTriggerEventDispatcher<
 		this.Exit += go;
 	}
 
+	public override void UnSubscribeToLightTriggerEvent(Action<GameObject> go)
+	{
+		if (this.Exit != null)
+		{
+			this.Exit -= go;
+		}
+	}
+
 	private void OnTriggerExit()
 	{
 		if (this.Exit != null)
@@ -53,7 +61,13 @@ public class LightTriggerStayDispatcher : BaseLightSingleTriggerEventDispatcher<
 	{
 		this.Stay += go;
 	}
-
+	public override void UnSubscribeToLightTriggerEvent(Action<GameObject> go)
+	{
+		if (this.Stay != null)
+		{
+			this.Stay -= go;
+		}
+	}
 	private void OnTriggerStay()
 	{
 		if (this.Stay != null)
@@ -73,6 +87,14 @@ public class TriggerEnterDispatcher : BaseSingleTriggerEventDispatcher<Collider,
 		this.Enter += handler;
 	}
 
+	public override void UnSubscribeToTriggerEvent(Action<Collider, GameObject> handler)
+	{
+		if (this.Enter != null)
+		{
+			this.Enter -= handler;
+		}
+	}
+
 	private void OnTriggerEnter(Collider other)
 	{
 		if (this.Enter != null)
@@ -86,6 +108,13 @@ public class TriggerExitDispatcher : BaseSingleTriggerEventDispatcher<Collider, 
 {
 	private event Action<Collider, GameObject> Exit;
 
+	public override void UnSubscribeToTriggerEvent(Action<Collider, GameObject> handler)
+	{
+		if (this.Exit != null)
+		{
+			this.Exit -= handler;
+		}
+	}
 	public override void SubscribeToTriggerEvent(Action<Collider, GameObject> handler)
 	{
 		this.Exit += handler;
@@ -108,7 +137,13 @@ public class TriggerStayDispatcher : BaseSingleTriggerEventDispatcher<Collider, 
 	{
 		this.Stay += handler;
 	}
-
+	public override void UnSubscribeToTriggerEvent(Action<Collider, GameObject> handler)
+	{
+		if (this.Stay != null)
+		{
+			this.Stay -= handler;
+		}
+	}
 	private void OnTriggerStay(Collider other)
 	{
 		if (this.Stay != null)

@@ -1,77 +1,75 @@
 ﻿using System;
 using UnityEngine;
 
-public abstract class BaseTrigerAndColliderEventsExposer<EventArgs, DispatcherArgs> : MonoBehaviour, IColliderEventsDispatcher<EventArgs, DispatcherArgs>, ILightColliderEventsDispatcher<DispatcherArgs>
+public abstract class BaseTrigerAndColliderEventsExposer<EventArgs, DispatcherArgs> : MonoBehaviour
 {
-
-	protected abstract BaseLightSingleTriggerEventDispatcher<DispatcherArgs> LightEnterDispatcherr { get; }
-	protected abstract BaseLightSingleTriggerEventDispatcher<DispatcherArgs> LightStayDispatcher { get; }
-	protected abstract BaseLightSingleTriggerEventDispatcher<DispatcherArgs> LightExitDispatcher { get; }
-
-	protected abstract BaseSingleTriggerEventDispatcher<EventArgs, DispatcherArgs> EnterDispatcherr { get; }
-	protected abstract BaseSingleTriggerEventDispatcher<EventArgs, DispatcherArgs> StayDispatcher { get; }
-	protected abstract BaseSingleTriggerEventDispatcher<EventArgs, DispatcherArgs> ExitDispatcher { get; }
-
-	public void SubscribeToLightTriggerEvent(AllTriggerEventsTypes.EventTypes eventType, Action<DispatcherArgs> handler)
+	public void SubscribeToTriggerEvent<T>(Action<EventArgs, DispatcherArgs> handler) where T : BaseSingleTriggerEventDispatcher<EventArgs, DispatcherArgs>
 	{
-		switch (eventType)
+		T existingExposer = this.gameObject.GetComponent<T>();
+		if (existingExposer == null)
 		{
-			case AllTriggerEventsTypes.EventTypes.Enter:
-				{
-					this.LightEnterDispatcherr.SubscribeToLightTriggerEvent(handler);
-					break;
-				}
-			case AllTriggerEventsTypes.EventTypes.Stay:
-				{
-					this.LightStayDispatcher.SubscribeToLightTriggerEvent(handler);
-					break;
-				}
-			case AllTriggerEventsTypes.EventTypes.Exit:
-				{
-					this.LightExitDispatcher.SubscribeToLightTriggerEvent(handler);
-					break;
-				}
-			default:
-				{
-					throw new NotImplementedException("event type not implemented");
-				}
+			existingExposer = this.gameObject.AddComponent<T>();
 		}
+		existingExposer.SubscribeToTriggerEvent(handler);
 	}
 
-	public void SubscribeToTriggerEvent(AllTriggerEventsTypes.EventTypes eventType, Action<EventArgs, DispatcherArgs> handler)
+	public void SubscribeToLightTriggerEvent<T>(Action<DispatcherArgs> handler) where T : BaseLightSingleTriggerEventDispatcher<DispatcherArgs>
 	{
-		switch (eventType)
+		T existingExposer = this.gameObject.GetComponent<T>();
+		if (existingExposer == null)
 		{
-			case AllTriggerEventsTypes.EventTypes.Enter:
-				{
-					this.EnterDispatcherr.SubscribeToTriggerEvent(handler);
-					break;
-				}
-			case AllTriggerEventsTypes.EventTypes.Stay:
-				{
-					this.StayDispatcher.SubscribeToTriggerEvent(handler);
-					break;
-				}
-			case AllTriggerEventsTypes.EventTypes.Exit:
-				{
-					this.ExitDispatcher.SubscribeToTriggerEvent(handler);
-					break;
-				}
-			default:
-				{
-					throw new NotImplementedException("event type not implemented");
-				}
+			existingExposer = this.gameObject.AddComponent<T>();
 		}
+		existingExposer.SubscribeToLightTriggerEvent(handler);
 	}
 }
 
-public interface ILightColliderEventsDispatcher<DispatcherType>
+public static class EventsExposingExtensions
 {
-	void SubscribeToLightTriggerEvent(AllTriggerEventsTypes.EventTypes eventType, Action<DispatcherType> handler);
+	public static ExposerType SubscribeToTriggerEventExtension<ExposerType, EventArgs1, DispatcherArgs>(this GameObject go, Action<EventArgs1, DispatcherArgs> handler) where ExposerType : BaseSingleTriggerEventDispatcher<EventArgs1, DispatcherArgs>
+	{
+		ExposerType existingExposer = go.GetComponent<ExposerType>();
+		if (existingExposer == null)
+		{
+			existingExposer = go.AddComponent<ExposerType>();
+		}
+		existingExposer.SubscribeToTriggerEvent(handler);
+		return existingExposer;
+	}
 
+	public static ExposerType SubscribeToLightTriggerEventExtension<ExposerType, DispatcherArgs>(this GameObject go, Action<DispatcherArgs> handler) where ExposerType : BaseLightSingleTriggerEventDispatcher<DispatcherArgs>
+	{
+		ExposerType existingExposer = go.GetComponent<ExposerType>();
+		if (existingExposer == null)
+		{
+			existingExposer = go.AddComponent<ExposerType>();
+		}
+		existingExposer.SubscribeToLightTriggerEvent(handler);
+		return existingExposer;
+	}
+
+	public static ExposerType UnSubscribeToTriggerEventExtension<ExposerType, EventArgs1, DispatcherArgs>(this GameObject go, Action<EventArgs1, DispatcherArgs> handler) where ExposerType : BaseSingleTriggerEventDispatcher<EventArgs1, DispatcherArgs>
+	{
+		ExposerType existingExposer = go.GetComponent<ExposerType>();
+		if (existingExposer == null)
+		{
+			Debug.LogError("Event dispatcher does not exist anymore");
+			return default(ExposerType);
+		}
+		existingExposer.UnSubscribeToTriggerEvent(handler);
+		return existingExposer;
+	}
+
+	public static ExposerType UnSubscribeToLightTriggerEventExtension<ExposerType, DispatcherArgs>(this GameObject go, Action<DispatcherArgs> handler) where ExposerType : BaseLightSingleTriggerEventDispatcher<DispatcherArgs>
+	{
+		ExposerType existingExposer = go.GetComponent<ExposerType>();
+		if (existingExposer == null)
+		{
+			Debug.LogError("Event dispatcher does not exist anymore");
+			return default(ExposerType);
+		}
+		existingExposer.UnSubscribeToLightTriggerEvent(handler);
+		return existingExposer;
+	}
 }
 
-public interface IColliderEventsDispatcher<EventArgsType, DispatcherType>
-{
-	void SubscribeToTriggerEvent(AllTriggerEventsTypes.EventTypes eventType, Action<EventArgsType, DispatcherType> go);
-}
