@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-
+[DisallowMultipleComponent]
 public class UpdateEventExposer : BaseLightSingleTriggerEventDispatcher<GameObject>
 {
 	private event Action<GameObject> OnUpdate;

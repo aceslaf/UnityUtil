@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-
+[DisallowMultipleComponent]
 public class LightTriggerEnterDispatcher : BaseLightSingleTriggerEventDispatcher<GameObject>
 {
 	private event Action<GameObject> Enter;
@@ -27,7 +27,7 @@ public class LightTriggerEnterDispatcher : BaseLightSingleTriggerEventDispatcher
 		}
 	}
 }
-
+[DisallowMultipleComponent]
 public class LightTriggerExitDispatcher : BaseLightSingleTriggerEventDispatcher<GameObject>
 {
 	private event Action<GameObject> Exit;
@@ -53,7 +53,7 @@ public class LightTriggerExitDispatcher : BaseLightSingleTriggerEventDispatcher<
 	}
 }
 
-
+[DisallowMultipleComponent]
 public class LightTriggerStayDispatcher : BaseLightSingleTriggerEventDispatcher<GameObject>
 {
 	private event Action<GameObject> Stay;
@@ -77,7 +77,7 @@ public class LightTriggerStayDispatcher : BaseLightSingleTriggerEventDispatcher<
 	}
 }
 
-
+[DisallowMultipleComponent]
 public class TriggerEnterDispatcher : BaseSingleTriggerEventDispatcher<Collider, GameObject>
 {
 	private event Action<Collider, GameObject> Enter;
@@ -103,7 +103,7 @@ public class TriggerEnterDispatcher : BaseSingleTriggerEventDispatcher<Collider,
 		}
 	}
 }
-
+[DisallowMultipleComponent]
 public class TriggerExitDispatcher : BaseSingleTriggerEventDispatcher<Collider, GameObject>
 {
 	private event Action<Collider, GameObject> Exit;
@@ -128,7 +128,7 @@ public class TriggerExitDispatcher : BaseSingleTriggerEventDispatcher<Collider, 
 		}
 	}
 }
-
+[DisallowMultipleComponent]
 public class TriggerStayDispatcher : BaseSingleTriggerEventDispatcher<Collider, GameObject>
 {
 	private event Action<Collider, GameObject> Stay;
